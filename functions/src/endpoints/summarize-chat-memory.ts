@@ -28,6 +28,7 @@ export async function summarizeChatMemoryHandler(req: Request, res: Response): P
     }));
 
     // Update chat memory document
+    const now = new Date();
     const memoryData = {
       lastThemes: validated.lastThemes || [],
       unresolvedTopic: validated.unresolvedTopic,
@@ -36,12 +37,13 @@ export async function summarizeChatMemoryHandler(req: Request, res: Response): P
 
     await updateChatMemory(uid, memoryData);
 
+    // Build response with ISO timestamp (Firestore write uses serverTimestamp)
     const response = {
       uid,
       lastThemes: memoryData.lastThemes,
       unresolvedTopic: memoryData.unresolvedTopic,
       recentEmotionalState: memoryData.recentEmotionalState,
-      lastUpdatedAt: new Date().toISOString(),
+      lastUpdatedAt: now.toISOString(),
     };
 
     // Validate response
