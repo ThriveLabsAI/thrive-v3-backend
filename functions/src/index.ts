@@ -60,6 +60,14 @@ app.post(
   summarizeChatMemoryHandler
 );
 
+// Alias: /v3/memory -> same handler as /v3/summarizeChatMemory
+app.post(
+  '/v3/memory',
+  authMiddleware,
+  validateRequestBody(ChatMemoryRequestSchema),
+  summarizeChatMemoryHandler
+);
+
 // Error handler
 app.use((err: Error, req: any, res: any, _next: any) => {
   console.error('Unhandled error:', err);
