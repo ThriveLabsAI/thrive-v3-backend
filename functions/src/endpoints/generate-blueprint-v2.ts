@@ -70,6 +70,12 @@ export async function generateBlueprintHandler(req: Request, res: Response): Pro
   } catch (error) {
     console.error('Blueprint generation error:', error);
 
+    // Log detailed error for debugging
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack);
+      console.error('Error message:', error.message);
+    }
+
     // Determine error code and message
     let errorCode = 'INTERNAL_ERROR';
     let statusCode = 500;
@@ -96,6 +102,7 @@ export async function generateBlueprintHandler(req: Request, res: Response): Pro
       code: errorCode,
       requestId: req.metadata?.requestId || 'unknown',
       timestamp: Date.now(),
+      debug: process.env.NODE_ENV === 'development' ? error instanceof Error ? error.message : String(error) : undefined,
     });
   }
 }
