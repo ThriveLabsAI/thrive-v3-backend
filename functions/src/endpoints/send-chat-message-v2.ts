@@ -71,17 +71,22 @@ export async function sendChatMessageHandler(req: Request, res: Response): Promi
       createdAt: assistantCreatedAt,
     });
 
+    const contextObj: any = {
+      usedBlueprint: !!blueprintSummary,
+      usedDailyGuidance: !!guidanceSummary,
+      usedMemory: !!memorySummary,
+      usedTone: tonePref || false,
+    };
+
+    if (blueprint?.focusAreas) {
+      contextObj.blueprintFocusAreas = blueprint.focusAreas;
+    }
+
     const response = {
       id: assistantMessageId,
       reply,
       createdAt: assistantCreatedAt,
-      context: {
-        usedBlueprint: !!blueprintSummary,
-        usedDailyGuidance: !!guidanceSummary,
-        usedMemory: !!memorySummary,
-        usedTone: tonePref || false,
-        blueprintFocusAreas: blueprint?.focusAreas,
-      },
+      context: contextObj,
     };
 
     // Validate response
