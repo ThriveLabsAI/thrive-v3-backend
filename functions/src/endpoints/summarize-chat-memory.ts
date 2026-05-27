@@ -29,22 +29,30 @@ export async function summarizeChatMemoryHandler(req: Request, res: Response): P
 
     // Update chat memory document
     const now = new Date();
-    const memoryData = {
+    const memoryData: Record<string, any> = {
       lastThemes: validated.lastThemes || [],
-      unresolvedTopic: validated.unresolvedTopic,
-      recentEmotionalState: validated.recentEmotionalState,
     };
+    if (validated.unresolvedTopic !== undefined) {
+      memoryData.unresolvedTopic = validated.unresolvedTopic;
+    }
+    if (validated.recentEmotionalState !== undefined) {
+      memoryData.recentEmotionalState = validated.recentEmotionalState;
+    }
 
     await updateChatMemory(uid, memoryData);
 
     // Build response with ISO timestamp (Firestore write uses serverTimestamp)
-    const response = {
+    const response: Record<string, any> = {
       uid,
       lastThemes: memoryData.lastThemes,
-      unresolvedTopic: memoryData.unresolvedTopic,
-      recentEmotionalState: memoryData.recentEmotionalState,
       lastUpdatedAt: now.toISOString(),
     };
+    if (memoryData.unresolvedTopic) {
+      response.unresolvedTopic = memoryData.unresolvedTopic;
+    }
+    if (memoryData.recentEmotionalState) {
+      response.recentEmotionalState = memoryData.recentEmotionalState;
+    }
 
     // Validate response
     const validatedResponse = ChatMemoryResponseSchema.parse(response);
