@@ -10,11 +10,16 @@ import { generateDailyGuidanceHandler } from './endpoints/generate-daily-guidanc
 import { generateBlueprintHandler } from './endpoints/generate-blueprint-v2';
 import { sendChatMessageHandler } from './endpoints/send-chat-message-v2';
 import { summarizeChatMemoryHandler } from './endpoints/summarize-chat-memory';
+import { iapVerifyHandler } from './endpoints/iap-verify';
+import { iapRestoreHandler } from './endpoints/iap-restore';
+import { iapEntitlementHandler } from './endpoints/iap-entitlement';
 import {
   DailyGuidanceRequestSchema,
   BlueprintRequestSchema,
   ChatMessageRequestSchema,
   ChatMemoryRequestSchema,
+  IAPVerifyRequestSchema,
+  IAPRestoreRequestSchema,
 } from './schemas/responses';
 
 // Initialize Firebase Admin SDK
@@ -68,6 +73,27 @@ app.post(
   summarizeChatMemoryHandler
 );
 
+// IAP (In-App Purchase) endpoints
+app.post(
+  '/v3/iap/verify',
+  authMiddleware,
+  validateRequestBody(IAPVerifyRequestSchema),
+  iapVerifyHandler
+);
+
+app.post(
+  '/v3/iap/restore',
+  authMiddleware,
+  validateRequestBody(IAPRestoreRequestSchema),
+  iapRestoreHandler
+);
+
+app.get(
+  '/v3/iap/entitlement',
+  authMiddleware,
+  iapEntitlementHandler
+);
+
 // Error handler
 app.use((err: Error, req: any, res: any, _next: any) => {
   console.error('Unhandled error:', err);
@@ -97,5 +123,8 @@ console.log(JSON.stringify({
     'POST /v3/generateDailyGuidance (includes mission, patternToWatch, strengthToUse)',
     'POST /v3/sendChatMessage (context injection: blueprint, guidance, memory)',
     'POST /v3/summarizeChatMemory (new endpoint for memory updates)',
+    'POST /v3/iap/verify (Apple/Google receipt verification)',
+    'POST /v3/iap/restore (Restore previous purchases)',
+    'GET /v3/iap/entitlement (Check premium status)',
   ],
 }));

@@ -88,3 +88,35 @@ export async function getDailyGuidance(uid: string, date: string): Promise<any> 
   const doc = await getDb().collection('v3_daily_guidance').doc(uid).collection('days').doc(date).get();
   return doc.data() || null;
 }
+
+export async function storeEntitlement(
+  uid: string,
+  platform: 'apple' | 'google',
+  productId: string,
+  transactionId: string,
+  originalTransactionId: string,
+  expiresAt: Date | null
+): Promise<void> {
+  await getDb().collection('v3_entitlements').doc(uid).set({
+    platform,
+    productId,
+    transactionId,
+    originalTransactionId,
+    expiresAt: expiresAt ? admin.firestore.Timestamp.fromDate(expiresAt) : null,
+    status: expiresAt && new Date() < expiresAt ? 'active' : 'expired',
+    verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+}
+
+export async function getEntitlement(uid: string): Promise<any> {
+  const doc = await getDb().collection('v3_entitlements').doc(uid).get();
+  return doc.data() || null;
+}
+
+export async function updateEntitlementStatus(uid: string, status: 'active' | 'expired' | 'refunded' | 'cancelled'): Promise<void> {
+  await getDb().collection('v3_entitlements').doc(uid).update({
+    status,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+}

@@ -131,3 +131,46 @@ export const AuthProfileResponseSchema = z.object({
 });
 
 export type AuthProfileResponse = z.infer<typeof AuthProfileResponseSchema>;
+
+// ===== IAP VERIFICATION =====
+export const IAPVerifyRequestSchema = z.object({
+  platform: z.enum(['apple', 'google']),
+  receipt: z.string().optional(),
+  purchaseToken: z.string().optional(),
+  productId: z.string(),
+});
+
+export type IAPVerifyRequest = z.infer<typeof IAPVerifyRequestSchema>;
+
+export const IAPVerifyResponseSchema = z.object({
+  status: z.enum(['active', 'expired', 'invalid']),
+  productId: z.string(),
+  expiresAt: z.string().datetime().optional(),
+  message: z.string(),
+  entitlementId: z.string().optional(),
+});
+
+export type IAPVerifyResponse = z.infer<typeof IAPVerifyResponseSchema>;
+
+// ===== IAP RESTORE =====
+export const IAPRestoreRequestSchema = z.object({
+  platform: z.enum(['apple', 'google']),
+  receipt: z.string().optional(),
+  purchaseToken: z.string().optional(),
+});
+
+export type IAPRestoreRequest = z.infer<typeof IAPRestoreRequestSchema>;
+
+// ===== IAP ENTITLEMENT =====
+export const IAPEntitlementResponseSchema = z.object({
+  uid: z.string(),
+  platform: z.enum(['apple', 'google']).optional(),
+  productId: z.string().optional(),
+  status: z.enum(['active', 'expired', 'refunded', 'cancelled']).optional(),
+  expiresAt: z.string().datetime().optional(),
+  isPremium: z.boolean(),
+  renewalAvailable: z.boolean().optional(),
+  verifiedAt: z.string().datetime().optional(),
+});
+
+export type IAPEntitlementResponse = z.infer<typeof IAPEntitlementResponseSchema>;
