@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// ===== HEALTH =====
 export const HealthResponseSchema = z.object({
   status: z.enum(['ok', 'degraded', 'down']),
   timestamp: z.number(),
@@ -9,6 +10,7 @@ export const HealthResponseSchema = z.object({
 
 export type HealthResponse = z.infer<typeof HealthResponseSchema>;
 
+// ===== ERROR =====
 export const ErrorResponseSchema = z.object({
   error: z.string(),
   code: z.string(),
@@ -18,25 +20,67 @@ export const ErrorResponseSchema = z.object({
 
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 
+// ===== DAILY GUIDANCE =====
+export const DailyGuidanceRequestSchema = z.object({
+  context: z.string().optional(),
+  date: z.string().optional(),
+});
+
+export type DailyGuidanceRequest = z.infer<typeof DailyGuidanceRequestSchema>;
+
+export const DailyGuidanceResponseSchema = z.object({
+  message: z.string(),
+  affirmation: z.string().optional(),
+  action: z.string().optional(),
+  generatedAt: z.string().datetime(),
+});
+
+export type DailyGuidanceResponse = z.infer<typeof DailyGuidanceResponseSchema>;
+
+// ===== BLUEPRINT =====
+export const BlueprintRequestSchema = z.object({
+  context: z.string().optional(),
+  previousBlueprint: z.any().optional(),
+});
+
+export type BlueprintRequest = z.infer<typeof BlueprintRequestSchema>;
+
+export const BlueprintSectionSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+});
+
 export const BlueprintResponseSchema = z.object({
-  status: z.enum(['success', 'error']),
-  blueprintId: z.string().optional(),
-  content: z.string().optional(),
-  error: z.string().optional(),
-  requestId: z.string(),
-  timestamp: z.number(),
+  title: z.string(),
+  summary: z.string(),
+  sections: z.array(BlueprintSectionSchema),
+  generatedAt: z.string().datetime(),
 });
 
 export type BlueprintResponse = z.infer<typeof BlueprintResponseSchema>;
 
+// ===== CHAT MESSAGE =====
+export const ChatMessageRequestSchema = z.object({
+  message: z.string().min(1),
+  sessionId: z.string().optional(),
+});
+
+export type ChatMessageRequest = z.infer<typeof ChatMessageRequestSchema>;
+
 export const ChatMessageResponseSchema = z.object({
-  status: z.enum(['success', 'error']),
-  messageId: z.string().optional(),
-  role: z.enum(['user', 'assistant']).optional(),
-  content: z.string().optional(),
-  error: z.string().optional(),
-  requestId: z.string(),
-  timestamp: z.number(),
+  id: z.string(),
+  reply: z.string(),
+  createdAt: z.string().datetime(),
 });
 
 export type ChatMessageResponse = z.infer<typeof ChatMessageResponseSchema>;
+
+// ===== AUTH PROFILE =====
+export const AuthProfileResponseSchema = z.object({
+  uid: z.string(),
+  email: z.string().optional(),
+  createdAt: z.string().datetime().optional(),
+  lastSignIn: z.string().datetime().optional(),
+});
+
+export type AuthProfileResponse = z.infer<typeof AuthProfileResponseSchema>;

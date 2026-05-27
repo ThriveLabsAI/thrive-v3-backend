@@ -2,8 +2,18 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import express from 'express';
 import { loggingMiddleware } from './middleware/logging';
-import { validateAuth } from './middleware/validation';
+import { validateRequestBody } from './middleware/validation';
+import { authMiddleware } from './utils/auth';
 import { health } from './endpoints/health';
+import { authProfile } from './endpoints/auth-profile';
+import { generateDailyGuidanceHandler } from './endpoints/generate-daily-guidance';
+import { generateBlueprintHandler } from './endpoints/generate-blueprint';
+import { sendChatMessageHandler } from './endpoints/send-chat-message';
+import {
+  DailyGuidanceRequestSchema,
+  BlueprintRequestSchema,
+  ChatMessageRequestSchema,
+} from './schemas/responses';
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
@@ -18,13 +28,28 @@ app.use(loggingMiddleware);
 app.get('/v3/health', health);
 
 // Protected routes (require auth)
-app.use(validateAuth);
+app.get('/v3/auth/profile', authMiddleware, authProfile);
 
-// Future protected endpoints will be added here:
-// app.post('/v3/generateBlueprint', generateBlueprint);
-// app.post('/v3/generateDailyGuidance', generateDailyGuidance);
-// app.post('/v3/sendChatMessage', sendChatMessage);
-// etc.
+app.post(
+  '/v3/generateDailyGuidance',
+  authMiddleware,
+  validateRequestBody(DailyGuidanceRequestSchema),
+  generateDailyGuidanceHandler
+);
+
+app.post(
+  '/v3/generateBlueprint',
+  authMiddleware,
+  validateRequestBody(BlueprintRequestSchema),
+  generateBlueprintHandler
+);
+
+app.post(
+  '/v3/sendChatMessage',
+  authMiddleware,
+  validateRequestBody(ChatMessageRequestSchema),
+  sendChatMessageHandler
+);
 
 // Error handler
 app.use((err: Error, req: any, res: any, _next: any) => {
@@ -50,5 +75,9 @@ console.log(JSON.stringify({
   region: 'us-central1',
   endpoints: [
     'GET /v3/health',
+    'GET /v3/auth/profile',
+    'POST /v3/generateDailyGuidance',
+    'POST /v3/generateBlueprint',
+    'POST /v3/sendChatMessage',
   ],
 }));
