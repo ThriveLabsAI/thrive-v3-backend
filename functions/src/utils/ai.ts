@@ -10,17 +10,18 @@ export async function generateText(
   prompt: string,
   options: AICompletionOptions = {}
 ): Promise<string> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
+  // Check functions config first (firebase functions:config:set), then env var for CI
+  const apiKey = functions.config().ai?.openai_key || process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    throw new Error('DEEPSEEK_API_KEY not configured');
+    throw new Error('OPENAI_API_KEY not configured — set via firebase functions:config:set ai.openai_key=...');
   }
 
-  const model = options.model || 'deepseek-chat';
+  const model = options.model || 'gpt-4o-mini';
   const temperature = options.temperature ?? 0.7;
   const maxTokens = options.maxTokens ?? 500;
 
   try {
-    const response = await fetch('https://api.deepseek.com/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ export async function generateText(
 
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`DeepSeek API error: ${response.status} - ${error}`);
+      throw new Error(`OpenAI API error: ${response.status} - ${error}`);
     }
 
     const data: any = await response.json();
