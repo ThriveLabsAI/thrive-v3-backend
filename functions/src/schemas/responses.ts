@@ -82,10 +82,21 @@ export const ChatMessageRequestSchema = z.object({
 
 export type ChatMessageRequest = z.infer<typeof ChatMessageRequestSchema>;
 
+export const ChatMessageContextSchema = z.object({
+  usedBlueprint: z.boolean().optional(),
+  usedDailyGuidance: z.boolean().optional(),
+  usedMemory: z.boolean().optional(),
+  usedTone: z.boolean().or(z.string()).optional(),
+  blueprintFocusAreas: z.array(z.string()).optional(),
+});
+
+export type ChatMessageContext = z.infer<typeof ChatMessageContextSchema>;
+
 export const ChatMessageResponseSchema = z.object({
   id: z.string(),
   reply: z.string(),
   createdAt: z.string().datetime(),
+  context: ChatMessageContextSchema.optional(),
 });
 
 export type ChatMessageResponse = z.infer<typeof ChatMessageResponseSchema>;

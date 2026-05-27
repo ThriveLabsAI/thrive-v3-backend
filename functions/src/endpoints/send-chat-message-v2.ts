@@ -75,6 +75,13 @@ export async function sendChatMessageHandler(req: Request, res: Response): Promi
       id: assistantMessageId,
       reply,
       createdAt: assistantCreatedAt,
+      context: {
+        usedBlueprint: !!blueprintSummary,
+        usedDailyGuidance: !!guidanceSummary,
+        usedMemory: !!memorySummary,
+        usedTone: tonePref || false,
+        blueprintFocusAreas: blueprint?.focusAreas,
+      },
     };
 
     // Validate response
