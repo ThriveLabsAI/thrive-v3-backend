@@ -62,6 +62,12 @@ export async function summarizeChatMemoryHandler(req: Request, res: Response): P
   } catch (error) {
     console.error('Memory summarization error:', error);
 
+    // Log detailed error for debugging
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack);
+      console.error('Error message:', error.message);
+    }
+
     // Determine error code and message
     let errorCode = 'INTERNAL_ERROR';
     let statusCode = 500;
@@ -72,6 +78,10 @@ export async function summarizeChatMemoryHandler(req: Request, res: Response): P
         errorCode = 'VALIDATION_ERROR';
         statusCode = 400;
         errorMessage = 'Invalid request';
+      } else if (error.message.includes('Firestore')) {
+        errorCode = 'FIRESTORE_ERROR';
+        statusCode = 500;
+        errorMessage = 'Database operation failed';
       }
     }
 
@@ -80,6 +90,7 @@ export async function summarizeChatMemoryHandler(req: Request, res: Response): P
       code: errorCode,
       requestId: req.metadata?.requestId || 'unknown',
       timestamp: Date.now(),
+      debug: process.env.NODE_ENV === 'development' ? error instanceof Error ? error.message : String(error) : undefined,
     });
   }
 }
