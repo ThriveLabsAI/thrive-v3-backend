@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface AICompletionOptions {
   model?: string;
@@ -56,69 +57,127 @@ export async function generateText(
       throw new Error('No content in API response');
     }
 
-    return content;
+    // Strip markdown code fences if model accidentally includes them
+    return content.replace(/```[\s\S]*?```/g, '').trim();
   } catch (error) {
     functions.logger.error('AI generation error:', { error, prompt: prompt.substring(0, 100) });
     throw error;
   }
 }
 
-export async function generateDailyGuidance(context?: string): Promise<{ message: string; affirmation?: string; action?: string }> {
-  const prompt = `Generate a short, uplifting daily guidance message${
-    context ? ` based on this context: ${context}` : ''
-  }. Include:
-1. A main message (1-2 sentences)
-2. An affirmation (optional, 1 sentence)
-3. A suggested action for today (optional, 1 sentence)
+export async function generateDailyGuidance(
+  blueprintSummary?: string,
+  focusAreas?: string[],
+  tonePref?: string
+): Promise<{ message: string; affirmation?: string; action?: string; mission?: any; patternToWatch?: string; strengthToUse?: string }> {
+  const blueprintText = blueprintSummary ? `Blueprint: ${blueprintSummary}` : '';
+  const focusText = focusAreas?.length ? `Focus areas: ${focusAreas.join(', ')}.` : '';
+  const toneText = tonePref ? `Tone: ${tonePref}.` : '';
 
-Format as JSON with keys: message, affirmation, action`;
+  const prompt = `${blueprintText} ${focusText} ${toneText}
 
-  const response = await generateText(prompt, { maxTokens: 300 });
+Generate today's guidance. Include:
+1. Main message (1-2 sentences)
+2. Affirmation (1 sentence)
+3. Suggested action (1 sentence)
+4. Pattern to watch (emotional insight, 1 sentence)
+5. Strength to use (1 sentence)
+6. One small mission (title, description, difficulty, estimatedMinutes)
+
+ONLY respond with valid JSON (no markdown):
+{
+  "message": "string",
+  "affirmation": "string",
+  "action": "string",
+  "patternToWatch": "string",
+  "strengthToUse": "string",
+  "mission": {
+    "title": "string",
+    "description": "string",
+    "difficulty": "easy|medium|hard",
+    "estimatedMinutes": number
+  }
+}`;
+
+  const response = await generateText(prompt, { maxTokens: 800 });
 
   try {
     const parsed = JSON.parse(response);
     return {
-      message: parsed.message || response,
+      message: parsed.message || 'Take a moment for yourself today.',
       affirmation: parsed.affirmation,
       action: parsed.action,
+      patternToWatch: parsed.patternToWatch,
+      strengthToUse: parsed.strengthToUse,
+      mission: parsed.mission ? { id: uuidv4(), ...parsed.mission } : undefined,
     };
   } catch {
     return { message: response };
   }
 }
 
-export async function generateBlueprint(context?: string): Promise<{ title: string; summary: string; sections: Array<{ title: string; content: string }> }> {
-  const prompt = `Create a personal blueprint/life plan${
-    context ? ` based on this context: ${context}` : ''
-  }. Include:
-1. A title for the blueprint
-2. A brief summary
-3. 3-4 sections with titles and content
+export async function generateBlueprint(
+  name: string,
+  focusAreas?: string[],
+  emotionalGoal?: string,
+  seferYetzirahInsight?: string
+): Promise<{ title: string; summary: string; sections: Array<{ title: string; content: string }> }> {
+  const focusText = focusAreas?.length ? `Focus areas: ${focusAreas.join(', ')}.` : '';
+  const goalText = emotionalGoal ? `Current emotional goal: ${emotionalGoal}.` : '';
+  const syText = seferYetzirahInsight ? `Deeper guidance (Sefer Yetzirah): ${seferYetzirahInsight}` : '';
 
-Format as JSON with keys: title, summary, sections (array of {title, content})`;
+  const prompt = `Create a personal blueprint for ${name}. ${focusText} ${goalText} ${syText}
 
-  const response = await generateText(prompt, { maxTokens: 1000 });
+Generate a personalized blueprint with:
+1. A title reflecting their direction
+2. A brief, warm summary (2-3 sentences)
+3. 3-4 sections: strengths, growth areas, daily practices, guidance style
+
+ONLY respond with valid JSON (no markdown):
+{
+  "title": "string",
+  "summary": "string",
+  "sections": [
+    {"title": "string", "content": "string"}
+  ]
+}`;
+
+  const response = await generateText(prompt, { maxTokens: 1200 });
 
   try {
     const parsed = JSON.parse(response);
     return {
-      title: parsed.title || 'Personal Blueprint',
+      title: parsed.title || `${name}'s Blueprint`,
       summary: parsed.summary || '',
       sections: Array.isArray(parsed.sections) ? parsed.sections : [],
     };
   } catch {
     return {
-      title: 'Personal Blueprint',
+      title: `${name}'s Blueprint`,
       summary: response,
       sections: [],
     };
   }
 }
 
-export async function generateChatReply(message: string, context?: string): Promise<string> {
-  const prompt = `Respond helpfully and empathetically to this message: "${message}"${
-    context ? `. Context: ${context}` : ''
-  }. Keep response concise (1-3 sentences).`;
+export async function generateChatReply(
+  userMessage: string,
+  blueprintSummary?: string,
+  dailyGuidance?: string,
+  memorySummary?: string,
+  tonePref?: string
+): Promise<string> {
+  const contextParts = [];
+  if (blueprintSummary) contextParts.push(`Blueprint: ${blueprintSummary}`);
+  if (dailyGuidance) contextParts.push(`Today: ${dailyGuidance}`);
+  if (memorySummary) contextParts.push(`Memory: ${memorySummary}`);
+  if (tonePref) contextParts.push(`Tone: ${tonePref}`);
 
-  return generateText(prompt, { maxTokens: 200 });
+  const contextText = contextParts.length ? `Context:\n${contextParts.join('\n')}\n\n` : '';
+
+  const prompt = `${contextText}Respond warmly and concisely to: "${userMessage}"
+
+Be a warm mentor. Keep response to 1-3 sentences. One practical next step if helpful. No markdown code fences.`;
+
+  return generateText(prompt, { maxTokens: 400 });
 }

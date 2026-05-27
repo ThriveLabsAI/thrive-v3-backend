@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { DailyGuidanceRequestSchema, DailyGuidanceResponseSchema } from '../schemas/responses';
 import { generateDailyGuidance } from '../utils/ai';
-import { writeDailyGuidance } from '../utils/firestore';
+import { writeDailyGuidance, getUserBlueprint } from '../utils/firestore';
 
 export async function generateDailyGuidanceHandler(req: Request, res: Response): Promise<void> {
   try {
@@ -28,11 +28,22 @@ export async function generateDailyGuidanceHandler(req: Request, res: Response):
       uidHash: req.metadata?.uidHash,
     }));
 
+    // Load user's blueprint for context
+    const blueprint = await getUserBlueprint(uid);
+    const blueprintSummary = blueprint?.summary;
+    const focusAreas = blueprint?.focusAreas;
+    const tonePref = blueprint?.tonePreference;
+
     // Generate guidance via AI
-    const guidance = await generateDailyGuidance(validated.context);
+    const guidance = await generateDailyGuidance(blueprintSummary, focusAreas, tonePref);
 
     const response = {
-      ...guidance,
+      message: guidance.message,
+      affirmation: guidance.affirmation,
+      action: guidance.action,
+      patternToWatch: guidance.patternToWatch,
+      strengthToUse: guidance.strengthToUse,
+      mission: guidance.mission,
       generatedAt: new Date().toISOString(),
     };
 
@@ -51,6 +62,7 @@ export async function generateDailyGuidanceHandler(req: Request, res: Response):
       event: 'daily_guidance_generated',
       uidHash: req.metadata?.uidHash,
       date,
+      hasMission: !!validatedResponse.mission,
     }));
   } catch (error) {
     console.error('Daily guidance error:', error);
@@ -61,14 +73,18 @@ export async function generateDailyGuidanceHandler(req: Request, res: Response):
     let errorMessage = 'Internal server error';
 
     if (error instanceof Error) {
-      if (error.message.includes('DEEPSEEK_API_KEY')) {
+      if (error.message.includes('OPENAI_API_KEY')) {
         errorCode = 'AI_CONFIG_ERROR';
         statusCode = 503;
         errorMessage = 'AI service not configured';
-      } else if (error.message.includes('DeepSeek API error')) {
+      } else if (error.message.includes('OpenAI API error')) {
         errorCode = 'AI_SERVICE_ERROR';
         statusCode = 503;
         errorMessage = 'AI service unavailable';
+      } else if (error.message.includes('validation')) {
+        errorCode = 'VALIDATION_ERROR';
+        statusCode = 400;
+        errorMessage = 'Invalid request';
       }
     }
 

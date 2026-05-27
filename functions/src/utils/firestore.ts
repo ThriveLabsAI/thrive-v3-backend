@@ -15,10 +15,7 @@ export async function writeDailyGuidance(
   });
 }
 
-export async function writeBlueprint(
-  uid: string,
-  data: { title: string; summary: string; sections: Array<{ title: string; content: string }>; generatedAt: string }
-): Promise<void> {
+export async function writeBlueprint(uid: string, data: any): Promise<void> {
   await getDb().collection('v3_blueprints').doc(uid).set({
     ...data,
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -68,4 +65,26 @@ export async function getUserProfile(uid: string): Promise<any> {
 
 export async function updateUserProfile(uid: string, data: any): Promise<void> {
   await getDb().collection('v3_users').doc(uid).set(data, { merge: true });
+}
+
+export async function getUserBlueprint(uid: string): Promise<any> {
+  const doc = await getDb().collection('v3_blueprints').doc(uid).get();
+  return doc.data() || null;
+}
+
+export async function getChatMemory(uid: string): Promise<any> {
+  const doc = await getDb().collection('v3_chat_memory').doc(uid).get();
+  return doc.data() || null;
+}
+
+export async function updateChatMemory(uid: string, data: any): Promise<void> {
+  await getDb().collection('v3_chat_memory').doc(uid).set({
+    ...data,
+    lastUpdatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  }, { merge: true });
+}
+
+export async function getDailyGuidance(uid: string, date: string): Promise<any> {
+  const doc = await getDb().collection('v3_daily_guidance').doc(uid).collection('days').doc(date).get();
+  return doc.data() || null;
 }

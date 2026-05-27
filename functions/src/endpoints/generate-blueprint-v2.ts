@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { BlueprintRequestSchema, BlueprintResponseSchema } from '../schemas/responses';
 import { generateBlueprint } from '../utils/ai';
 import { writeBlueprint } from '../utils/firestore';
+import { getSefarYetzirahInsight } from '../utils/sefer-yetzirah';
 
 export async function generateBlueprintHandler(req: Request, res: Response): Promise<void> {
   try {
@@ -27,8 +28,17 @@ export async function generateBlueprintHandler(req: Request, res: Response): Pro
       uidHash: req.metadata?.uidHash,
     }));
 
+    // Get Sefer Yetzirah insights from birthdate
+    const syInsight = getSefarYetzirahInsight(validated.birthdate);
+    const syText = syInsight ? `${syInsight.zodiac} (${syInsight.letter}): ${syInsight.insight}` : undefined;
+
     // Generate blueprint via AI
-    const blueprint = await generateBlueprint(validated.context);
+    const blueprint = await generateBlueprint(
+      validated.name,
+      validated.focusAreas,
+      validated.emotionalGoal,
+      syText
+    );
 
     const response = {
       ...blueprint,
@@ -39,7 +49,12 @@ export async function generateBlueprintHandler(req: Request, res: Response): Pro
     const validatedResponse = BlueprintResponseSchema.parse(response);
 
     // Write to Firestore
-    await writeBlueprint(uid, validatedResponse);
+    await writeBlueprint(uid, {
+      ...validatedResponse,
+      birthdate: validated.birthdate,
+      focusAreas: validated.focusAreas,
+      tonePreference: validated.tonePreference,
+    });
 
     res.status(200).json(validatedResponse);
 
@@ -50,6 +65,7 @@ export async function generateBlueprintHandler(req: Request, res: Response): Pro
       event: 'blueprint_generated',
       uidHash: req.metadata?.uidHash,
       sectionsCount: validatedResponse.sections.length,
+      sydiac: syInsight?.zodiac,
     }));
   } catch (error) {
     console.error('Blueprint generation error:', error);
@@ -60,14 +76,18 @@ export async function generateBlueprintHandler(req: Request, res: Response): Pro
     let errorMessage = 'Internal server error';
 
     if (error instanceof Error) {
-      if (error.message.includes('DEEPSEEK_API_KEY')) {
+      if (error.message.includes('OPENAI_API_KEY')) {
         errorCode = 'AI_CONFIG_ERROR';
         statusCode = 503;
         errorMessage = 'AI service not configured';
-      } else if (error.message.includes('DeepSeek API error')) {
+      } else if (error.message.includes('OpenAI API error')) {
         errorCode = 'AI_SERVICE_ERROR';
         statusCode = 503;
         errorMessage = 'AI service unavailable';
+      } else if (error.message.includes('validation')) {
+        errorCode = 'VALIDATION_ERROR';
+        statusCode = 400;
+        errorMessage = 'Invalid request';
       }
     }
 

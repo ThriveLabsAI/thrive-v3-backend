@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatMessageRequestSchema, ChatMessageResponseSchema } from '../schemas/responses';
 import { generateChatReply } from '../utils/ai';
-import { writeChatMessage, getOrCreateChatSession } from '../utils/firestore';
+import { writeChatMessage, getOrCreateChatSession, getUserBlueprint, getChatMemory, getDailyGuidance } from '../utils/firestore';
 
 export async function sendChatMessageHandler(req: Request, res: Response): Promise<void> {
   try {
@@ -41,8 +41,25 @@ export async function sendChatMessageHandler(req: Request, res: Response): Promi
       createdAt: now,
     });
 
-    // Generate AI reply
-    const reply = await generateChatReply(validated.message);
+    // Load context: blueprint, daily guidance, memory
+    const blueprint = await getUserBlueprint(uid);
+    const memory = await getChatMemory(uid);
+    const today = new Date().toISOString().split('T')[0];
+    const dailyGuidance = await getDailyGuidance(uid, today);
+
+    const blueprintSummary = blueprint?.summary;
+    const guidanceSummary = dailyGuidance?.message;
+    const memorySummary = memory?.unresolvedTopic || memory?.lastThemes?.join(', ');
+    const tonePref = blueprint?.tonePreference;
+
+    // Generate AI reply with context injection
+    const reply = await generateChatReply(
+      validated.message,
+      blueprintSummary,
+      guidanceSummary,
+      memorySummary,
+      tonePref
+    );
 
     // Store assistant message
     const assistantMessageId = uuidv4();
@@ -72,6 +89,11 @@ export async function sendChatMessageHandler(req: Request, res: Response): Promi
       event: 'chat_message_replied',
       uidHash: req.metadata?.uidHash,
       sessionId,
+      contextLoaded: {
+        blueprint: !!blueprintSummary,
+        guidance: !!guidanceSummary,
+        memory: !!memorySummary,
+      },
     }));
   } catch (error) {
     console.error('Chat message error:', error);
@@ -82,18 +104,18 @@ export async function sendChatMessageHandler(req: Request, res: Response): Promi
     let errorMessage = 'Internal server error';
 
     if (error instanceof Error) {
-      if (error.message.includes('DEEPSEEK_API_KEY')) {
+      if (error.message.includes('OPENAI_API_KEY')) {
         errorCode = 'AI_CONFIG_ERROR';
         statusCode = 503;
         errorMessage = 'AI service not configured';
-      } else if (error.message.includes('DeepSeek API error')) {
+      } else if (error.message.includes('OpenAI API error')) {
         errorCode = 'AI_SERVICE_ERROR';
         statusCode = 503;
         errorMessage = 'AI service unavailable';
-      } else if (error.message.includes('Invalid request body')) {
+      } else if (error.message.includes('validation')) {
         errorCode = 'VALIDATION_ERROR';
         statusCode = 400;
-        errorMessage = 'Invalid request body';
+        errorMessage = 'Invalid request';
       }
     }
 

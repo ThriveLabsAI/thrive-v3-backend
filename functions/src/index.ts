@@ -6,13 +6,15 @@ import { validateRequestBody } from './middleware/validation';
 import { authMiddleware } from './utils/auth';
 import { health } from './endpoints/health';
 import { authProfile } from './endpoints/auth-profile';
-import { generateDailyGuidanceHandler } from './endpoints/generate-daily-guidance';
-import { generateBlueprintHandler } from './endpoints/generate-blueprint';
-import { sendChatMessageHandler } from './endpoints/send-chat-message';
+import { generateDailyGuidanceHandler } from './endpoints/generate-daily-guidance-v2';
+import { generateBlueprintHandler } from './endpoints/generate-blueprint-v2';
+import { sendChatMessageHandler } from './endpoints/send-chat-message-v2';
+import { summarizeChatMemoryHandler } from './endpoints/summarize-chat-memory';
 import {
   DailyGuidanceRequestSchema,
   BlueprintRequestSchema,
   ChatMessageRequestSchema,
+  ChatMemoryRequestSchema,
 } from './schemas/responses';
 
 // Initialize Firebase Admin SDK
@@ -31,13 +33,6 @@ app.get('/v3/health', health);
 app.get('/v3/auth/profile', authMiddleware, authProfile);
 
 app.post(
-  '/v3/generateDailyGuidance',
-  authMiddleware,
-  validateRequestBody(DailyGuidanceRequestSchema),
-  generateDailyGuidanceHandler
-);
-
-app.post(
   '/v3/generateBlueprint',
   authMiddleware,
   validateRequestBody(BlueprintRequestSchema),
@@ -45,10 +40,24 @@ app.post(
 );
 
 app.post(
+  '/v3/generateDailyGuidance',
+  authMiddleware,
+  validateRequestBody(DailyGuidanceRequestSchema),
+  generateDailyGuidanceHandler
+);
+
+app.post(
   '/v3/sendChatMessage',
   authMiddleware,
   validateRequestBody(ChatMessageRequestSchema),
   sendChatMessageHandler
+);
+
+app.post(
+  '/v3/summarizeChatMemory',
+  authMiddleware,
+  validateRequestBody(ChatMemoryRequestSchema),
+  summarizeChatMemoryHandler
 );
 
 // Error handler
@@ -76,8 +85,9 @@ console.log(JSON.stringify({
   endpoints: [
     'GET /v3/health',
     'GET /v3/auth/profile',
-    'POST /v3/generateDailyGuidance',
-    'POST /v3/generateBlueprint',
-    'POST /v3/sendChatMessage',
+    'POST /v3/generateBlueprint (birthdate required, includes Sefer Yetzirah insights)',
+    'POST /v3/generateDailyGuidance (includes mission, patternToWatch, strengthToUse)',
+    'POST /v3/sendChatMessage (context injection: blueprint, guidance, memory)',
+    'POST /v3/summarizeChatMemory (new endpoint for memory updates)',
   ],
 }));
