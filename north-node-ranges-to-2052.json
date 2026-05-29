@@ -1,0 +1,544 @@
+{
+  "dateRanges": [
+    {
+      "start": "1916-05-31",
+      "end": "1918-02-13",
+      "sign": "Capricorn",
+      "source": "table"
+    },
+    {
+      "start": "1918-02-14",
+      "end": "1919-08-15",
+      "sign": "Sagittarius",
+      "source": "table"
+    },
+    {
+      "start": "1919-08-16",
+      "end": "1921-02-07",
+      "sign": "Scorpio",
+      "source": "table"
+    },
+    {
+      "start": "1921-02-08",
+      "end": "1922-08-22",
+      "sign": "Libra",
+      "source": "table"
+    },
+    {
+      "start": "1922-08-23",
+      "end": "1924-04-22",
+      "sign": "Virgo",
+      "source": "table"
+    },
+    {
+      "start": "1924-04-23",
+      "end": "1925-10-26",
+      "sign": "Leo",
+      "source": "table"
+    },
+    {
+      "start": "1925-10-27",
+      "end": "1927-04-16",
+      "sign": "Cancer",
+      "source": "table"
+    },
+    {
+      "start": "1927-04-17",
+      "end": "1928-12-28",
+      "sign": "Gemini",
+      "source": "table"
+    },
+    {
+      "start": "1928-12-29",
+      "end": "1930-07-07",
+      "sign": "Taurus",
+      "source": "table"
+    },
+    {
+      "start": "1930-07-08",
+      "end": "1931-12-28",
+      "sign": "Aries",
+      "source": "table"
+    },
+    {
+      "start": "1931-12-29",
+      "end": "1933-06-24",
+      "sign": "Pisces",
+      "source": "table"
+    },
+    {
+      "start": "1933-06-25",
+      "end": "1935-03-08",
+      "sign": "Aquarius",
+      "source": "table"
+    },
+    {
+      "start": "1935-03-09",
+      "end": "1936-09-13",
+      "sign": "Capricorn",
+      "source": "table"
+    },
+    {
+      "start": "1936-09-14",
+      "end": "1938-03-03",
+      "sign": "Sagittarius",
+      "source": "table"
+    },
+    {
+      "start": "1938-03-04",
+      "end": "1939-09-11",
+      "sign": "Scorpio",
+      "source": "table"
+    },
+    {
+      "start": "1939-09-12",
+      "end": "1941-05-24",
+      "sign": "Libra",
+      "source": "table"
+    },
+    {
+      "start": "1941-05-25",
+      "end": "1942-11-21",
+      "sign": "Virgo",
+      "source": "table"
+    },
+    {
+      "start": "1942-11-22",
+      "end": "1944-05-11",
+      "sign": "Leo",
+      "source": "table"
+    },
+    {
+      "start": "1944-05-12",
+      "end": "1945-12-03",
+      "sign": "Cancer",
+      "source": "table"
+    },
+    {
+      "start": "1945-12-04",
+      "end": "1947-08-02",
+      "sign": "Gemini",
+      "source": "table"
+    },
+    {
+      "start": "1947-08-03",
+      "end": "1949-01-26",
+      "sign": "Taurus",
+      "source": "table"
+    },
+    {
+      "start": "1949-01-27",
+      "end": "1950-07-26",
+      "sign": "Aries",
+      "source": "table"
+    },
+    {
+      "start": "1950-07-27",
+      "end": "1952-03-28",
+      "sign": "Pisces",
+      "source": "table"
+    },
+    {
+      "start": "1952-03-29",
+      "end": "1953-10-09",
+      "sign": "Aquarius",
+      "source": "table"
+    },
+    {
+      "start": "1953-10-10",
+      "end": "1955-04-02",
+      "sign": "Capricorn",
+      "source": "table"
+    },
+    {
+      "start": "1955-04-03",
+      "end": "1956-10-04",
+      "sign": "Sagittarius",
+      "source": "table"
+    },
+    {
+      "start": "1956-10-05",
+      "end": "1958-06-16",
+      "sign": "Scorpio",
+      "source": "table"
+    },
+    {
+      "start": "1958-06-17",
+      "end": "1959-12-15",
+      "sign": "Libra",
+      "source": "table"
+    },
+    {
+      "start": "1959-12-16",
+      "end": "1961-06-10",
+      "sign": "Virgo",
+      "source": "table"
+    },
+    {
+      "start": "1961-06-11",
+      "end": "1962-12-23",
+      "sign": "Leo",
+      "source": "table"
+    },
+    {
+      "start": "1962-12-24",
+      "end": "1964-08-25",
+      "sign": "Cancer",
+      "source": "table"
+    },
+    {
+      "start": "1964-08-26",
+      "end": "1966-02-19",
+      "sign": "Gemini",
+      "source": "table"
+    },
+    {
+      "start": "1966-02-20",
+      "end": "1967-08-19",
+      "sign": "Taurus",
+      "source": "table"
+    },
+    {
+      "start": "1967-08-20",
+      "end": "1969-04-19",
+      "sign": "Aries",
+      "source": "table"
+    },
+    {
+      "start": "1969-04-20",
+      "end": "1970-11-02",
+      "sign": "Pisces",
+      "source": "table"
+    },
+    {
+      "start": "1970-11-03",
+      "end": "1972-04-27",
+      "sign": "Aquarius",
+      "source": "table"
+    },
+    {
+      "start": "1972-04-28",
+      "end": "1973-10-27",
+      "sign": "Capricorn",
+      "source": "table"
+    },
+    {
+      "start": "1973-10-28",
+      "end": "1975-07-09",
+      "sign": "Sagittarius",
+      "source": "table"
+    },
+    {
+      "start": "1975-07-10",
+      "end": "1977-01-07",
+      "sign": "Scorpio",
+      "source": "table"
+    },
+    {
+      "start": "1977-01-08",
+      "end": "1978-07-05",
+      "sign": "Libra",
+      "source": "table"
+    },
+    {
+      "start": "1978-07-06",
+      "end": "1980-01-05",
+      "sign": "Virgo",
+      "source": "table"
+    },
+    {
+      "start": "1980-01-06",
+      "end": "1981-09-24",
+      "sign": "Leo",
+      "source": "table"
+    },
+    {
+      "start": "1981-09-25",
+      "end": "1983-03-16",
+      "sign": "Cancer",
+      "source": "table"
+    },
+    {
+      "start": "1983-03-17",
+      "end": "1984-09-11",
+      "sign": "Gemini",
+      "source": "table"
+    },
+    {
+      "start": "1984-09-12",
+      "end": "1986-04-06",
+      "sign": "Taurus",
+      "source": "table"
+    },
+    {
+      "start": "1986-04-07",
+      "end": "1987-12-02",
+      "sign": "Aries",
+      "source": "table"
+    },
+    {
+      "start": "1987-12-03",
+      "end": "1989-05-22",
+      "sign": "Pisces",
+      "source": "table"
+    },
+    {
+      "start": "1989-05-23",
+      "end": "1990-11-18",
+      "sign": "Aquarius",
+      "source": "table"
+    },
+    {
+      "start": "1990-11-19",
+      "end": "1992-08-01",
+      "sign": "Capricorn",
+      "source": "table"
+    },
+    {
+      "start": "1992-08-02",
+      "end": "1994-02-01",
+      "sign": "Sagittarius",
+      "source": "table"
+    },
+    {
+      "start": "1994-02-02",
+      "end": "1995-07-31",
+      "sign": "Scorpio",
+      "source": "table"
+    },
+    {
+      "start": "1995-08-01",
+      "end": "1997-01-25",
+      "sign": "Libra",
+      "source": "table"
+    },
+    {
+      "start": "1997-01-26",
+      "end": "1998-10-20",
+      "sign": "Virgo",
+      "source": "table"
+    },
+    {
+      "start": "1998-10-21",
+      "end": "2000-04-09",
+      "sign": "Leo",
+      "source": "table"
+    },
+    {
+      "start": "2000-04-10",
+      "end": "2001-10-13",
+      "sign": "Cancer",
+      "source": "table"
+    },
+    {
+      "start": "2001-10-14",
+      "end": "2003-04-14",
+      "sign": "Gemini",
+      "source": "table"
+    },
+    {
+      "start": "2003-04-15",
+      "end": "2004-12-26",
+      "sign": "Taurus",
+      "source": "table"
+    },
+    {
+      "start": "2004-12-27",
+      "end": "2006-06-22",
+      "sign": "Aries",
+      "source": "table"
+    },
+    {
+      "start": "2006-06-23",
+      "end": "2007-12-18",
+      "sign": "Pisces",
+      "source": "table"
+    },
+    {
+      "start": "2007-12-19",
+      "end": "2009-08-21",
+      "sign": "Aquarius",
+      "source": "table"
+    },
+    {
+      "start": "2009-08-21",
+      "end": "2011-03-02",
+      "sign": "Capricorn",
+      "source": "table"
+    },
+    {
+      "start": "2011-03-03",
+      "end": "2012-08-30",
+      "sign": "Sagittarius",
+      "source": "table"
+    },
+    {
+      "start": "2012-08-31",
+      "end": "2014-02-18",
+      "sign": "Scorpio",
+      "source": "table"
+    },
+    {
+      "start": "2014-02-19",
+      "end": "2015-11-12",
+      "sign": "Libra",
+      "source": "table"
+    },
+    {
+      "start": "2015-11-13",
+      "end": "2017-05-09",
+      "sign": "Virgo",
+      "source": "table"
+    },
+    {
+      "start": "2017-05-10",
+      "end": "2018-11-06",
+      "sign": "Leo",
+      "source": "table"
+    },
+    {
+      "start": "2018-11-07",
+      "end": "2020-05-05",
+      "sign": "Cancer",
+      "source": "table"
+    },
+    {
+      "start": "2020-05-06",
+      "end": "2022-01-18",
+      "sign": "Gemini",
+      "source": "table"
+    },
+    {
+      "start": "2022-01-18",
+      "end": "2023-07-18",
+      "sign": "Taurus",
+      "source": "table"
+    },
+    {
+      "start": "2023-07-19",
+      "end": "2024-01-11",
+      "sign": "Aries",
+      "source": "table"
+    },
+    {
+      "start": "2024-01-12",
+      "end": "2026-04-27",
+      "sign": "Pisces",
+      "source": "table"
+    },
+    {
+      "start": "2026-04-28",
+      "end": "2028-03-26",
+      "sign": "Aquarius",
+      "source": "table"
+    },
+    {
+      "start": "2028-03-27",
+      "end": "2029-09-23",
+      "sign": "Capricorn",
+      "source": "table"
+    },
+    {
+      "start": "2029-09-24",
+      "end": "2029-09-24",
+      "sign": "Capricorn",
+      "source": "computed"
+    },
+    {
+      "start": "2029-09-25",
+      "end": "2031-04-14",
+      "sign": "Sagittarius",
+      "source": "computed"
+    },
+    {
+      "start": "2031-04-15",
+      "end": "2032-10-31",
+      "sign": "Scorpio",
+      "source": "computed"
+    },
+    {
+      "start": "2032-11-01",
+      "end": "2034-05-21",
+      "sign": "Libra",
+      "source": "computed"
+    },
+    {
+      "start": "2034-05-22",
+      "end": "2035-12-08",
+      "sign": "Virgo",
+      "source": "computed"
+    },
+    {
+      "start": "2035-12-09",
+      "end": "2037-06-27",
+      "sign": "Leo",
+      "source": "computed"
+    },
+    {
+      "start": "2037-06-28",
+      "end": "2039-01-15",
+      "sign": "Cancer",
+      "source": "computed"
+    },
+    {
+      "start": "2039-01-16",
+      "end": "2040-08-03",
+      "sign": "Gemini",
+      "source": "computed"
+    },
+    {
+      "start": "2040-08-04",
+      "end": "2042-02-21",
+      "sign": "Taurus",
+      "source": "computed"
+    },
+    {
+      "start": "2042-02-22",
+      "end": "2043-09-10",
+      "sign": "Aries",
+      "source": "computed"
+    },
+    {
+      "start": "2043-09-11",
+      "end": "2045-03-30",
+      "sign": "Pisces",
+      "source": "computed"
+    },
+    {
+      "start": "2045-03-31",
+      "end": "2046-10-17",
+      "sign": "Aquarius",
+      "source": "computed"
+    },
+    {
+      "start": "2046-10-18",
+      "end": "2048-05-06",
+      "sign": "Capricorn",
+      "source": "computed"
+    },
+    {
+      "start": "2048-05-07",
+      "end": "2049-11-23",
+      "sign": "Sagittarius",
+      "source": "computed"
+    },
+    {
+      "start": "2049-11-24",
+      "end": "2051-06-13",
+      "sign": "Scorpio",
+      "source": "computed"
+    },
+    {
+      "start": "2051-06-14",
+      "end": "2052-12-30",
+      "sign": "Libra",
+      "source": "computed"
+    },
+    {
+      "start": "2052-12-31",
+      "end": "2052-12-31",
+      "sign": "Virgo",
+      "source": "computed"
+    }
+  ]
+}
